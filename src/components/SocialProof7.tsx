@@ -9,7 +9,7 @@ interface SocialProof7Props {
 }
 
 export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [isFloating, setIsFloating] = useState(false);
   const [hasBeenSeen, setHasBeenSeen] = useState(false);
@@ -19,51 +19,18 @@ export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => 
 
   const hasBeenSeenRef = useRef(false);
 
-  // Delay mounting the YouTube iframe to prevent iOS Safari 
-  // from blocking the main thread and showing a 10-second black screen on load.
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsPlaying(true);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
   const toggleMute = (muteState: boolean) => {
     setIsMuted(muteState);
     if (iframeRef.current && iframeRef.current.contentWindow) {
       iframeRef.current.contentWindow.postMessage(
         JSON.stringify({
-          event: 'command',
-          func: muteState ? 'mute' : 'unMute',
-          args: []
+          method: 'setVolume',
+          value: muteState ? 0 : 1
         }),
         '*'
       );
     }
   };
-
-  // Forcefully remove YouTube auto-captions when the player loads
-  useEffect(() => {
-    if (!isPlaying) return;
-
-    const handleMessage = (e: MessageEvent) => {
-      if (typeof e.data === 'string' && (e.data.includes('"event":"onReady"') || e.data.includes('"event":"infoDelivery"'))) {
-        if (iframeRef.current && iframeRef.current.contentWindow) {
-          iframeRef.current.contentWindow.postMessage(
-            JSON.stringify({
-              event: 'command',
-              func: 'unloadModule',
-              args: ['captions']
-            }),
-            '*'
-          );
-        }
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [isPlaying]);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -140,9 +107,9 @@ export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => 
       <iframe
         ref={iframeRef}
         className="w-full h-full"
-        src="https://www.youtube-nocookie.com/embed/LZJfX7Iv7Oc?autoplay=1&mute=1&enablejsapi=1&rel=0&cc_load_policy=3&iv_load_policy=3&controls=0"
+        src="https://player.vimeo.com/video/1218264886?api=1&autoplay=1&muted=1&controls=0&loop=1&title=0&byline=0&portrait=0&dnt=1"
         title="Funnel Architecture Overview"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allow="autoplay; fullscreen; picture-in-picture"
         allowFullScreen
       />
 
@@ -172,7 +139,7 @@ export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => 
     >
       {/* YouTube Video Thumbnail */}
       <img
-        src="https://img.youtube.com/vi/LZJfX7Iv7Oc/maxresdefault.jpg"
+        src="https://vumbnail.com/1218264886.jpg"
         alt="Rance Coon Video Breakdown"
         className="w-full h-full object-cover object-center group-hover/poster:scale-105 transition-transform duration-700 filter brightness-75"
         loading="lazy"
