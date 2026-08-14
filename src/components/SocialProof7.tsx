@@ -33,6 +33,29 @@ export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => 
     }
   };
 
+  // Forcefully remove YouTube auto-captions when the player loads
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const handleMessage = (e: MessageEvent) => {
+      if (typeof e.data === 'string' && (e.data.includes('"event":"onReady"') || e.data.includes('"event":"infoDelivery"'))) {
+        if (iframeRef.current && iframeRef.current.contentWindow) {
+          iframeRef.current.contentWindow.postMessage(
+            JSON.stringify({
+              event: 'command',
+              func: 'unloadModule',
+              args: ['captions']
+            }),
+            '*'
+          );
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isPlaying]);
+
   useEffect(() => {
     if (!isPlaying) {
       setIsFloating(false);
@@ -108,7 +131,7 @@ export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => 
       <iframe
         ref={iframeRef}
         className="w-full h-full"
-        src="https://www.youtube-nocookie.com/embed/LZJfX7Iv7Oc?autoplay=1&mute=1&enablejsapi=1&rel=0&cc_load_policy=0&controls=0"
+        src="https://www.youtube-nocookie.com/embed/LZJfX7Iv7Oc?autoplay=1&mute=1&enablejsapi=1&rel=0&cc_load_policy=3&iv_load_policy=3&controls=0"
         title="Funnel Architecture Overview"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
