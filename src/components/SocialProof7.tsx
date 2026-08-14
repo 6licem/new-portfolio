@@ -9,8 +9,8 @@ interface SocialProof7Props {
 }
 
 export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
   const [isFloating, setIsFloating] = useState(false);
   const [hasBeenSeen, setHasBeenSeen] = useState(false);
   
@@ -108,7 +108,7 @@ export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => 
       <iframe
         ref={iframeRef}
         className="w-full h-full"
-        src="https://www.youtube-nocookie.com/embed/LZJfX7Iv7Oc?autoplay=1&mute=1&enablejsapi=1"
+        src="https://www.youtube-nocookie.com/embed/LZJfX7Iv7Oc?autoplay=1&mute=1&enablejsapi=1&rel=0&cc_load_policy=0&controls=0"
         title="Funnel Architecture Overview"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
