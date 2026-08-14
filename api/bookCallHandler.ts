@@ -123,12 +123,14 @@ export async function processBooking(body: any) {
           timeZone: 'Asia/Manila',
         },
         attendees: [
-          { email: email, displayName: fullName },
-          { email: 'rancecoonbusiness@gmail.com', displayName: 'Rance Coon' }
+          { email: email, displayName: fullName, responseStatus: 'needsAction' }
         ],
+        guestsCanInviteOthers: false,
+        guestsCanModify: false,
+        guestsCanSeeOtherGuests: false,
         conferenceData: {
           createRequest: {
-            requestId: `call-${Date.now()}`,
+            requestId: `call-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
             conferenceSolutionKey: { type: 'hangoutsMeet' },
           },
         },
@@ -154,23 +156,27 @@ export async function processBooking(body: any) {
 
       calendarResult = {
         success: true,
-        message: 'Scheduled directly into Google Calendar with Google Meet invite!',
+        message: 'Strategy session scheduled directly in Google Calendar with Google Meet invite!',
         eventLink: response?.data?.htmlLink || '',
         meetLink: response?.data?.hangoutLink || response?.data?.conferenceData?.entryPoints?.[0]?.uri || '',
       };
     } else {
+      const missing = [];
+      if (!clientId) missing.push('GOOGLE_CLIENT_ID');
+      if (!clientSecret) missing.push('GOOGLE_CLIENT_SECRET');
+      if (!refreshToken) missing.push('GOOGLE_REFRESH_TOKEN');
       calendarResult = {
         success: false,
-        message: 'Booking recorded.',
+        message: `Missing environment variables: ${missing.join(', ')}`,
         eventLink: '',
         meetLink: '',
       };
     }
   } catch (gErr: any) {
-    console.warn('Google Calendar API notice:', gErr?.message || gErr);
+    console.warn('Google Calendar API error:', gErr?.message || gErr);
     calendarResult = {
       success: false,
-      message: 'Booking recorded.',
+      message: `Google Calendar error: ${gErr?.message || 'API request failed'}`,
       eventLink: '',
       meetLink: '',
     };

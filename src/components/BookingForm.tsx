@@ -608,14 +608,23 @@ export const BookingForm: React.FC<BookingFormProps> = ({
               </a>
             )}
 
-            {(confirmationData.eventLink || confirmationData.googleCalendarUrl) && (
+            {confirmationData.eventLink ? (
               <a
-                href={confirmationData.eventLink || confirmationData.googleCalendarUrl}
+                href={confirmationData.eventLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full text-center py-3 bg-[#D94E10] hover:bg-[#E85D26] text-white text-xs font-mono font-bold uppercase tracking-widest rounded-sm transition-all shadow-md"
               >
-                View on Google Calendar
+                View Event on Google Calendar
+              </a>
+            ) : (
+              <a
+                href="https://calendar.app.google/xQjuEkT7ynqgW5r97"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center py-3 bg-[#D94E10] hover:bg-[#E85D26] text-white text-xs font-mono font-bold uppercase tracking-widest rounded-sm transition-all shadow-md"
+              >
+                Open Google Appointment Schedule
               </a>
             )}
           </div>
