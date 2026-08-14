@@ -9,8 +9,8 @@ interface SocialProof7Props {
 }
 
 export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => {
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [isFloating, setIsFloating] = useState(false);
   const [hasBeenSeen, setHasBeenSeen] = useState(false);
   
@@ -134,24 +134,41 @@ export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => 
       )}
     </div>
   ) : (
-    <>
-      {/* Background VSL Thumbnail Graphic */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-[#0D0E12] via-[#14171F] to-[#1A1E29]" />
+    <div 
+      onClick={() => setIsPlaying(true)}
+      className="absolute inset-0 cursor-pointer group/poster flex items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl"
+    >
+      {/* YouTube Video Thumbnail */}
+      <img
+        src="https://img.youtube.com/vi/LZJfX7Iv7Oc/maxresdefault.jpg"
+        alt="Rance Coon Video Breakdown"
+        className="w-full h-full object-cover object-center group-hover/poster:scale-105 transition-transform duration-700 filter brightness-75"
+        loading="lazy"
+      />
       
-      {/* Subtle Grid Pattern inside Video */}
-      <div className="absolute inset-0 bg-[radial-gradient(#333b4d_1px,transparent_1px)] [background-size:24px_24px] opacity-60 pointer-events-none" />
+      {/* Subtle Overlay Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/40" />
 
       {/* Centered Play Button */}
-      <motion.button
-        whileHover={{ scale: 1.08 }}
+      <motion.div
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setIsPlaying(true)}
-        className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#D94E10] hover:bg-[#E85D26] text-white flex items-center justify-center transition-all duration-300 shadow-2xl shadow-[#D94E10]/40 group/btn cursor-pointer"
-        aria-label="Play Video"
+        className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#D94E10] group-hover/poster:bg-[#E85D26] text-white flex items-center justify-center transition-all duration-300 shadow-2xl shadow-[#D94E10]/50"
       >
-        <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-current translate-x-0.5 transition-transform group-hover/btn:scale-110" />
-      </motion.button>
-    </>
+        <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-current translate-x-0.5" />
+      </motion.div>
+
+      {/* Bottom Label */}
+      <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 flex items-center justify-between pointer-events-none z-10">
+        <div>
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#E85D26] font-bold">Systems & Automation Walkthrough</span>
+          <h4 className="text-sm sm:text-base font-bold text-white tracking-tight">Watch: 1,800+ Hours Saved & Workflow Architecture</h4>
+        </div>
+        <span className="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-mono bg-black/60 backdrop-blur-md text-white border border-white/10">
+          Click to Play
+        </span>
+      </div>
+    </div>
   );
 
   const renderVideoPlayer = () => {

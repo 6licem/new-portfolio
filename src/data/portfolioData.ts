@@ -2,8 +2,8 @@ import { PortfolioItem, ServiceItem, Testimonial, FAQItem } from '../types';
 import lucasImg from '../assets/images/lucas_siverns.jpg';
 import markImg from '../assets/images/mark_pascua.jpg';
 import kyleImg from '../assets/images/kyle_astorga.jpg';
-import creativeVisionImg from '../assets/images/IMG_5253.png';
-import justSimplyMarketingImg from '../assets/images/Copy of IMG_9167.png';
+import creativeVisionImg from '../assets/images/creative_vision_opt.jpg';
+import justSimplyMarketingImg from '../assets/images/just_simply_marketing_opt.jpg';
 
 export const PORTFOLIO_PROJECTS: PortfolioItem[] = [
   {
