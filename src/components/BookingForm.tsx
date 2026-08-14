@@ -216,9 +216,9 @@ export const BookingForm: React.FC<BookingFormProps> = ({
       setConfirmationData({
         dateFormatted: data.booking?.selectedDateFormatted || selectedDate,
         timeFormatted: data.booking?.selectedTimeFormatted || selectedTime,
-        eventLink: data.booking?.calendarResult?.eventLink || data.booking?.googleCalendarUrl || directGCalUrl,
-        googleCalendarUrl: data.booking?.googleCalendarUrl || directGCalUrl,
-        calendarNote: data.booking?.calendarResult?.message || 'Booking received!',
+        eventLink: data.booking?.calendarResult?.eventLink || '',
+        googleCalendarUrl: data.booking?.calendarResult?.eventLink || data.booking?.googleCalendarUrl || directGCalUrl,
+        calendarNote: data.booking?.calendarResult?.message || 'Strategy session booked in Google Calendar!',
         meetLink: data.booking?.calendarResult?.meetLink || '',
       });
 
@@ -229,7 +229,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
       setConfirmationData({
         dateFormatted: selectedDate,
         timeFormatted: selectedTime,
-        eventLink: directGCalUrl,
+        eventLink: '',
         googleCalendarUrl: directGCalUrl,
         calendarNote: 'Booking received!',
       });
