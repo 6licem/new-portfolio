@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
-import { processBooking } from './api/bookCallHandler';
+import { processBooking } from './api/book-call';
 
 dotenv.config();
 
