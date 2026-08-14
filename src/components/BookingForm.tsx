@@ -596,19 +596,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
             </div>
           </div>
 
-          {confirmationData.meetLink && (
-            <div className="pt-2">
-              <a
-                href={confirmationData.meetLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-mono font-bold uppercase tracking-widest rounded-sm transition-all shadow-md"
-              >
-                Join Google Meet Video Call
-              </a>
-            </div>
-          )}
-
+          {/* Pure confirmation without secondary calendar redirect buttons */}
           <div className="pt-2 text-center">
             <button
               onClick={() => {
@@ -620,9 +608,9 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                 setSelectedDate('');
                 setSelectedTime('');
               }}
-              className="text-[11px] font-mono text-stone-400 hover:text-white uppercase tracking-widest transition-colors cursor-pointer"
+              className="px-6 py-2.5 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-mono uppercase tracking-widest transition-colors rounded-sm cursor-pointer"
             >
-              Schedule Another Session
+              Done
             </button>
           </div>
         </div>

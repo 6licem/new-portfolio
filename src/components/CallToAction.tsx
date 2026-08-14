@@ -112,9 +112,6 @@ export const CallToAction: React.FC<CallToActionProps> = ({ onOpenBooking }) => 
           {/* CTA Button */}
           <div className="flex flex-col items-center justify-center gap-3">
             <BookACallButton onClick={onOpenBooking} />
-            <p className="text-[11px] text-stone-400 font-mono tracking-wide">
-              Zero sales pitch. 100% actionable audit delivered within 24 hours.
-            </p>
           </div>
 
           {/* Social Proof 4 Block (Hidden for now): 3-column scrolling marquee Wall of Love */}
