@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  --n8n-coral: #D94E10;
+  --n8n-coral-hover: #C24108;
+  --n8n-coral-pink: #B83214;
+  --n8n-dark: #0D0E12;
+  --n8n-dark-surface: #14171F;
+  --n8n-dark-border: rgba(255, 255, 255, 0.08);
+}
+
+*:not(code):not(pre) {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #0D0E12;
+  color: #F3F4F6;
+}
+
+.glass-card {
+  background: rgba(20, 23, 31, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-card-hover:hover {
+  border-color: rgba(217, 78, 16, 0.35);
+  box-shadow: 0 20px 40px -10px rgba(217, 78, 16, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-nav {
+  background: rgba(13, 14, 18, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.n8n-gradient-text {
+  background: linear-gradient(135deg, #D94E10 0%, #C24108 40%, #B83214 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.n8n-glow-coral {
+  box-shadow: 0 0 30px rgba(217, 78, 16, 0.35);
+}
+
+/* Subtle dot grid pattern for dark background like n8n */
+.n8n-grid-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Make input type="date" clickable everywhere to trigger native datepicker */
+input[type="date"].date-picker-full-click {
+  position: relative;
+}
+
+input[type="date"].date-picker-full-click::-webkit-calendar-picker-indicator {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+/* Vertical marquee animations for Wall of Love */
+@keyframes marquee-vertical {
+  0% { transform: translateY(0%); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes marquee-vertical-reverse {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0%); }
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical 28s linear infinite;
+}
+
+.animate-marquee-vertical-reverse {
+  animation: marquee-vertical-reverse 32s linear infinite;
+}
+
+.animate-marquee-vertical-slow {
+  animation: marquee-vertical 36s linear infinite;
+}
+
+
+
+
