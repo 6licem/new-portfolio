@@ -1,5 +1,3 @@
-import { google } from 'googleapis';
-
 export async function processBooking(body: any) {
   const {
     fullName,
@@ -106,25 +104,31 @@ export async function processBooking(body: any) {
     const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
 
     if (clientId && clientSecret && refreshToken) {
-      const oauth2Client = new google.auth.OAuth2(clientId, clientSecret);
-      oauth2Client.setCredentials({ refresh_token: refreshToken });
+      // 1. Get Access Token
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: clientId,
+          client_secret: clientSecret,
+          refresh_token: refreshToken,
+          grant_type: 'refresh_token',
+        }),
+      });
 
-      const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+      if (!tokenResponse.ok) {
+        throw new Error(`Failed to refresh access token: ${tokenResponse.status}`);
+      }
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.access_token;
 
+      // 2. Prepare Event Payload
       const calendarEvent = {
         summary: `Sales Funnel Strategy Call: ${fullName} (${company || 'New Client'})`,
         description: descriptionText,
-        start: {
-          dateTime: startIsoString,
-          timeZone: 'Asia/Manila',
-        },
-        end: {
-          dateTime: endIsoString,
-          timeZone: 'Asia/Manila',
-        },
-        attendees: [
-          { email: email, displayName: fullName, responseStatus: 'needsAction' }
-        ],
+        start: { dateTime: startIsoString, timeZone: 'Asia/Manila' },
+        end: { dateTime: endIsoString, timeZone: 'Asia/Manila' },
+        attendees: [{ email: email, displayName: fullName, responseStatus: 'needsAction' }],
         guestsCanInviteOthers: false,
         guestsCanModify: false,
         guestsCanSeeOtherGuests: false,
@@ -136,29 +140,44 @@ export async function processBooking(body: any) {
         },
       };
 
-      let response;
-      try {
-        response = await calendar.events.insert({
-          calendarId: 'primary',
-          requestBody: calendarEvent,
-          conferenceDataVersion: 1,
-          sendUpdates: 'all',
-        });
-      } catch (calErr: any) {
-        console.warn('Calendar primary insert retry:', calErr?.message || calErr);
-        response = await calendar.events.insert({
-          calendarId: 'rancecoonbusiness@gmail.com',
-          requestBody: calendarEvent,
-          conferenceDataVersion: 1,
-          sendUpdates: 'all',
+      // 3. Insert Event
+      const calendarId = encodeURIComponent('primary');
+      const insertUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?conferenceDataVersion=1&sendUpdates=all`;
+      
+      let insertResponse = await fetch(insertUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(calendarEvent)
+      });
+
+      if (!insertResponse.ok) {
+        console.warn('Calendar primary insert retry:', await insertResponse.text());
+        const fallbackId = encodeURIComponent('rancecoonbusiness@gmail.com');
+        const fallbackUrl = `https://www.googleapis.com/calendar/v3/calendars/${fallbackId}/events?conferenceDataVersion=1&sendUpdates=all`;
+        insertResponse = await fetch(fallbackUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(calendarEvent)
         });
       }
+
+      if (!insertResponse.ok) {
+        throw new Error(`Failed to create calendar event: ${insertResponse.status}`);
+      }
+
+      const responseData = await insertResponse.json();
 
       calendarResult = {
         success: true,
         message: 'Strategy session scheduled directly in Google Calendar with Google Meet invite!',
-        eventLink: response?.data?.htmlLink || '',
-        meetLink: response?.data?.hangoutLink || response?.data?.conferenceData?.entryPoints?.[0]?.uri || '',
+        eventLink: responseData.htmlLink || '',
+        meetLink: responseData.hangoutLink || responseData.conferenceData?.entryPoints?.[0]?.uri || '',
       };
     } else {
       const missing = [];
