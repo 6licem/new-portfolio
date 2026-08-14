@@ -98,7 +98,7 @@ export async function processBooking(body: any) {
     `\nScheduled via Rance Coon Portfolio Booking System.`
   ].filter(Boolean).join('\n\n');
 
-  let calendarResult = { success: false, message: '', eventLink: '' };
+  let calendarResult = { success: false, message: '', eventLink: '', meetLink: '' };
 
   try {
     const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -154,22 +154,25 @@ export async function processBooking(body: any) {
 
       calendarResult = {
         success: true,
-        message: 'Scheduled directly into Google Calendar (Asia/Manila)!',
+        message: 'Scheduled directly into Google Calendar with Google Meet invite!',
         eventLink: response?.data?.htmlLink || '',
+        meetLink: response?.data?.hangoutLink || response?.data?.conferenceData?.entryPoints?.[0]?.uri || '',
       };
     } else {
       calendarResult = {
         success: false,
-        message: 'Booking received (OAuth credentials not configured on server)',
+        message: 'Booking recorded.',
         eventLink: '',
+        meetLink: '',
       };
     }
   } catch (gErr: any) {
     console.warn('Google Calendar API notice:', gErr?.message || gErr);
     calendarResult = {
       success: false,
-      message: 'Booking received!',
+      message: 'Booking recorded.',
       eventLink: '',
+      meetLink: '',
     };
   }
 

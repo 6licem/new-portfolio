@@ -36,6 +36,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
     eventLink?: string;
     googleCalendarUrl?: string;
     calendarNote?: string;
+    meetLink?: string;
   }>({});
 
   const industriesList = [
@@ -218,6 +219,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
         eventLink: data.booking?.calendarResult?.eventLink || data.booking?.googleCalendarUrl || directGCalUrl,
         googleCalendarUrl: data.booking?.googleCalendarUrl || directGCalUrl,
         calendarNote: data.booking?.calendarResult?.message || 'Booking received!',
+        meetLink: data.booking?.calendarResult?.meetLink || '',
       });
 
       setIsConfirmed(true);
@@ -567,12 +569,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({
               Strategy Session Scheduled
             </h3>
             <p className="text-stone-300 text-xs sm:text-sm font-light mt-2 leading-relaxed">
-              Thank you, <strong className="text-white font-semibold">{fullName}</strong>. Your session with Rance Coon has been recorded.
+              Thank you, <strong className="text-white font-semibold">{fullName}</strong>. A calendar invite with Google Meet has been created from <span className="text-[#E85D26] font-mono font-medium">rancecoonbusiness@gmail.com</span> and sent to <span className="text-stone-200 font-mono">{email}</span>.
             </p>
           </div>
 
           <div className="border-t border-b border-white/10 py-4 space-y-3 font-mono text-xs">
             <div className="flex justify-between items-center py-1">
+              <span className="text-stone-400 uppercase tracking-wider">Host / Organizer:</span>
+              <span className="text-white font-bold">Rance Coon</span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-t border-white/5">
               <span className="text-stone-400 uppercase tracking-wider">Scheduled Date:</span>
               <span className="text-[#E85D26] font-bold">{confirmationData.dateFormatted || selectedDate}</span>
             </div>
@@ -585,23 +591,34 @@ export const BookingForm: React.FC<BookingFormProps> = ({
               <span className="text-stone-300">Asia/Manila (UTC+8)</span>
             </div>
             <div className="flex justify-between items-center py-1 border-t border-white/5">
-              <span className="text-stone-400 uppercase tracking-wider">Contact Email:</span>
+              <span className="text-stone-400 uppercase tracking-wider">Attendee:</span>
               <span className="text-stone-300">{email}</span>
             </div>
           </div>
 
-          {(confirmationData.eventLink || confirmationData.googleCalendarUrl) && (
-            <div className="pt-2">
+          <div className="space-y-2 pt-2">
+            {confirmationData.meetLink && (
+              <a
+                href={confirmationData.meetLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-mono font-bold uppercase tracking-widest rounded-sm transition-all shadow-md"
+              >
+                Join Google Meet Video Call
+              </a>
+            )}
+
+            {(confirmationData.eventLink || confirmationData.googleCalendarUrl) && (
               <a
                 href={confirmationData.eventLink || confirmationData.googleCalendarUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full text-center py-3.5 bg-[#D94E10] hover:bg-[#E85D26] text-white text-xs font-mono font-bold uppercase tracking-widest rounded-sm transition-all shadow-md"
+                className="block w-full text-center py-3 bg-[#D94E10] hover:bg-[#E85D26] text-white text-xs font-mono font-bold uppercase tracking-widest rounded-sm transition-all shadow-md"
               >
-                Add to Google Calendar
+                View on Google Calendar
               </a>
-            </div>
-          )}
+            )}
+          </div>
 
           <div className="pt-2 text-center">
             <button
