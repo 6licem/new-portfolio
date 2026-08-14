@@ -9,7 +9,7 @@ interface SocialProof7Props {
 }
 
 export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => {
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isFloating, setIsFloating] = useState(false);
   const [hasBeenSeen, setHasBeenSeen] = useState(false);
@@ -18,6 +18,15 @@ export const SocialProof7: React.FC<SocialProof7Props> = ({ onOpenBooking }) => 
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const hasBeenSeenRef = useRef(false);
+
+  // Delay mounting the YouTube iframe to prevent iOS Safari 
+  // from blocking the main thread and showing a 10-second black screen on load.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsPlaying(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleMute = (muteState: boolean) => {
     setIsMuted(muteState);
