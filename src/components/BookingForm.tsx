@@ -596,8 +596,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
             </div>
           </div>
 
-          <div className="space-y-2 pt-2">
-            {confirmationData.meetLink && (
+          {confirmationData.meetLink && (
+            <div className="pt-2">
               <a
                 href={confirmationData.meetLink}
                 target="_blank"
@@ -606,28 +606,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
               >
                 Join Google Meet Video Call
               </a>
-            )}
-
-            {confirmationData.eventLink ? (
-              <a
-                href={confirmationData.eventLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center py-3 bg-[#D94E10] hover:bg-[#E85D26] text-white text-xs font-mono font-bold uppercase tracking-widest rounded-sm transition-all shadow-md"
-              >
-                View Event on Google Calendar
-              </a>
-            ) : (
-              <a
-                href="https://calendar.app.google/xQjuEkT7ynqgW5r97"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center py-3 bg-[#D94E10] hover:bg-[#E85D26] text-white text-xs font-mono font-bold uppercase tracking-widest rounded-sm transition-all shadow-md"
-              >
-                Open Google Appointment Schedule
-              </a>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="pt-2 text-center">
             <button
