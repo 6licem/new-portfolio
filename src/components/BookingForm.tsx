@@ -37,6 +37,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
     googleCalendarUrl?: string;
     calendarNote?: string;
     meetLink?: string;
+    isSuccess?: boolean;
   }>({});
 
   const industriesList = [
@@ -213,12 +214,17 @@ export const BookingForm: React.FC<BookingFormProps> = ({
         data = {};
       }
 
+      if (!response.ok) {
+        throw new Error(data.error || `Server returned ${response.status}`);
+      }
+
       setConfirmationData({
         dateFormatted: data.booking?.selectedDateFormatted || selectedDate,
         timeFormatted: data.booking?.selectedTimeFormatted || selectedTime,
         eventLink: data.booking?.calendarResult?.eventLink || '',
         googleCalendarUrl: data.booking?.calendarResult?.eventLink || data.booking?.googleCalendarUrl || directGCalUrl,
-        calendarNote: data.booking?.calendarResult?.message || 'Strategy session booked in Google Calendar!',
+        calendarNote: data.booking?.calendarResult?.message || '',
+        isSuccess: data.booking?.calendarResult?.success || false,
         meetLink: data.booking?.calendarResult?.meetLink || '',
       });
 
@@ -231,7 +237,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
         timeFormatted: selectedTime,
         eventLink: '',
         googleCalendarUrl: directGCalUrl,
-        calendarNote: 'Booking received!',
+        calendarNote: err.message || 'Server error or timeout when contacting the booking API',
+        isSuccess: false,
       });
       setIsConfirmed(true);
       if (onSuccess) onSuccess();
@@ -562,15 +569,26 @@ export const BookingForm: React.FC<BookingFormProps> = ({
         /* Confirmed State (Pure Typographic Design - No Cards, Icons or Pills) */
         <div className="py-4 space-y-6 animate-fadeIn">
           <div>
-            <div className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-[0.2em] mb-2">
-              CONFIRMED
+            <div className={`text-xs font-mono font-bold uppercase tracking-[0.2em] mb-2 ${confirmationData.isSuccess ? 'text-emerald-400' : 'text-amber-400'}`}>
+              {confirmationData.isSuccess ? 'CONFIRMED' : 'RECEIVED'}
             </div>
             <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              Strategy Session Scheduled
+              {confirmationData.isSuccess ? 'Strategy Session Scheduled' : 'Booking Request Received'}
             </h3>
-            <p className="text-stone-300 text-xs sm:text-sm font-light mt-2 leading-relaxed">
-              Thank you, <strong className="text-white font-semibold">{fullName}</strong>. A calendar invite with Google Meet has been created from <span className="text-[#E85D26] font-mono font-medium">rancecoonbusiness@gmail.com</span> and sent to <span className="text-stone-200 font-mono">{email}</span>.
-            </p>
+            {confirmationData.isSuccess ? (
+              <p className="text-stone-300 text-xs sm:text-sm font-light mt-2 leading-relaxed">
+                Thank you, <strong className="text-white font-semibold">{fullName}</strong>. A calendar invite with Google Meet has been created from <span className="text-[#E85D26] font-mono font-medium">rancecoonbusiness@gmail.com</span> and sent to <span className="text-stone-200 font-mono">{email}</span>.
+              </p>
+            ) : (
+              <div className="mt-4 p-4 border border-amber-500/30 bg-amber-500/10 rounded-sm">
+                <p className="text-amber-200 text-xs sm:text-sm font-mono leading-relaxed mb-3">
+                  <strong>Notice:</strong> Your request was recorded, but the automatic Google Calendar invite could not be sent.
+                </p>
+                <p className="text-stone-300 text-xs font-mono opacity-80 break-words">
+                  System message: {confirmationData.calendarNote || 'Vercel Environment Variables missing or API error'}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="border-t border-b border-white/10 py-4 space-y-3 font-mono text-xs">
