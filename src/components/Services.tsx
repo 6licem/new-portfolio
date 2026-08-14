@@ -90,6 +90,43 @@ const getServiceDetails = (service: ServiceItem) => {
 
 export const Services: React.FC<ServicesProps> = ({ onSelectServiceForEstimate, onOpenBooking }) => {
   const [activeTabId, setActiveTabId] = useState<string>(SERVICES[0].id);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // Minimum swipe distance
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    // Only process swipe on mobile
+    if (window.innerWidth >= 640) return;
+
+    if (isLeftSwipe || isRightSwipe) {
+      const currentIndex = SERVICES.findIndex(s => s.id === activeTabId);
+      if (isLeftSwipe) {
+        // Swipe left means next item
+        const nextIndex = (currentIndex + 1) % SERVICES.length;
+        setActiveTabId(SERVICES[nextIndex].id);
+      } else if (isRightSwipe) {
+        // Swipe right means previous item
+        const prevIndex = (currentIndex - 1 + SERVICES.length) % SERVICES.length;
+        setActiveTabId(SERVICES[prevIndex].id);
+      }
+    }
+  };
 
   const activeService = SERVICES.find((s) => s.id === activeTabId) || SERVICES[0];
   const details = getServiceDetails(activeService);
@@ -183,7 +220,12 @@ export const Services: React.FC<ServicesProps> = ({ onSelectServiceForEstimate, 
           </div>
 
           {/* TABBED SPOTLIGHT DISPLAY - Standardized exact height across all tabs to eliminate shifts */}
-          <div className="relative min-h-[640px] sm:min-h-[500px] lg:min-h-[420px] flex items-center justify-center w-full">
+          <div 
+            className="relative min-h-[640px] sm:min-h-[500px] lg:min-h-[420px] flex items-center justify-center w-full"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             <AnimatePresence mode="wait">
               {(() => {
                 const clientName = details.clientName || activeService.caseStudy?.client || '';
